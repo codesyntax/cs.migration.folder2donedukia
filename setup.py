@@ -26,6 +26,7 @@ setup(name='cs.migration.folder2donedukia',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
+          'cs.donedukia',
       ],
       entry_points="""
       # -*- Entry points: -*-

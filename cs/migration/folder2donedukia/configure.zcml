@@ -3,5 +3,7 @@
     xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="cs.migration.folder2donedukia">
 
+  <include package="cs.donedukia" />
+  <include package=".browser" />
 
 </configure>
