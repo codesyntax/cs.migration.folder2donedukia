@@ -1,11 +1,6 @@
 from Acquisition import aq_inner, aq_parent
 from Products.Five.browser import BrowserView
 
-from Products.CMFCore.utils import getToolByName
-
-from Products.contentmigration.walker import CatalogWalker
-from Products.contentmigration.archetypes import ATFolderMigrator
-
 class Folder2DonEdukia(BrowserView):
     def __call__(self):
         context = aq_inner(self.context)
