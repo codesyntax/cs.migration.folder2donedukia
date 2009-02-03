@@ -34,4 +34,5 @@ class Folder2DonEdukia(BrowserView):
         cp_data = context.manage_copyObjects([i.getId for i in context.getFolderContents()])
         new_obj.manage_pasteObjects(cp_data)
         parent.manage_delObjects(context.getId())
+        new_obj._renameAfterCreation()
         return self.request.response.redirect(new_obj.absolute_url())
