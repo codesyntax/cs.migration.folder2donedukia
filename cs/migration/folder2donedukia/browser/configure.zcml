@@ -10,4 +10,19 @@
       permission="cmf.ModifyPortalContent"
       />
 
+  <browser:page
+      name="folder2donedukia"
+      class=".folder.Folder2DonEdukia"
+      for="Products.ATContentTypes.interface.IATBTreeFolder"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <browser:page
+      name="doc2donedukia"
+      class=".folder.Doc2DonEdukia"
+      for="Products.ATContentTypes.interface.IATDocument"
+      permission="cmf.ModifyPortalContent"
+      />
+
+
 </configure>

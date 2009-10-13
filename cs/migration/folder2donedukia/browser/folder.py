@@ -16,11 +16,11 @@ class Folder2DonEdukia(BrowserView):
                                               text=elem.getText(),
                                               )
         else:
-                new_id = parent.invokeFactory(id=parent.generateUniqueId(),
-                                              type_name='DonEdukia',
-                                              title=context.Title(),
-                                              description=context.Description(),
-                                              ) 
+            new_id = parent.invokeFactory(id=parent.generateUniqueId(),
+                                          type_name='DonEdukia',
+                                          title=context.Title(),
+                                          description=context.Description(),
+                                          ) 
         new_obj = getattr(parent, new_id)
         new_obj._renameAfterCreation()
            
@@ -36,3 +36,27 @@ class Folder2DonEdukia(BrowserView):
         parent.manage_delObjects(context.getId())
         new_obj._renameAfterCreation()
         return self.request.response.redirect(new_obj.absolute_url())
+
+
+class Doc2DonEdukia(BrowserView):
+    def __call__(self):
+        context = aq_inner(self.context)
+        parent = aq_parent(context)
+        new_id = parent.invokeFactory(id=parent.generateUniqueId(),
+                                      type_name='DonEdukia',
+                                      title=context.Title(),
+                                      description=context.Description(),
+                                      text=context.getText(),
+                                      ) 
+        new_obj = getattr(parent, new_id)
+        new_obj._renameAfterCreation()
+        for lang, props in context.getTranslations().items():
+            obj = props[0]
+            if obj.UID() != context.UID():
+                obj.removeTranslationReference(context)
+                context.removeTranslationReference(obj)
+                new_obj.addTranslationReference(obj)
+
+        new_obj._renameAfterCreation()
+        return self.request.response.redirect(new_obj.absolute_url())
+
