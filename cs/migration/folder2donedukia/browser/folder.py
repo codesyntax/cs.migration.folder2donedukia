@@ -54,13 +54,17 @@ class Doc2DonEdukia(BrowserView):
                                       ) 
         new_obj = getattr(parent, new_id)
         new_obj._renameAfterCreation()
-        for lang, props in context.getTranslations().items():
-            obj = props[0]
-            if obj.UID() != context.UID():
-                obj.removeTranslationReference(context)
-                context.removeTranslationReference(obj)
-                new_obj.addTranslationReference(obj)
-
+        try:
+            # Try with translations
+            for lang, props in context.getTranslations().items():
+                obj = props[0]
+                if obj.UID() != context.UID():
+                    obj.removeTranslationReference(context)
+                    context.removeTranslationReference(obj)
+                    new_obj.addTranslationReference(obj)
+        except:
+            pass
+        
         new_obj._renameAfterCreation()
         return self.request.response.redirect(new_obj.absolute_url())
 
