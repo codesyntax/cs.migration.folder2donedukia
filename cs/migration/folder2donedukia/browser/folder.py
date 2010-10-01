@@ -2,27 +2,59 @@ from Acquisition import aq_inner, aq_parent
 from Products.Five.browser import BrowserView
 
 class Folder2DonEdukia(BrowserView):
-    def __call__(self):
+    def __call__(self, code=0):
         context = aq_inner(self.context)
         parent = aq_parent(context)
         default_page_id = context.getProperty('default_page', None)
         if default_page_id is not None:
             elem = getattr(context, default_page_id, None)
             if elem is not None:
-                new_id = parent.invokeFactory(id=parent.generateUniqueId(),
+                try:
+                    new_id = parent.invokeFactory(id=parent.generateUniqueId(),
                                               type_name='DonEdukia',
                                               title=elem.Title(),
                                               description=elem.Description(),
                                               text=elem.getText(),
                                               )
+                except Exception,e:
+                    from logging import getLogger
+                    log = getLogger('cs.migration.folder2donedukia')
+                    log.info(e)
+                    log.info(context.absolute_url())
+                    return 'XXXXX %s' % context.absolute_url()
+                    
+            else:
+                from logging import getLogger
+                log = getLogger('cs.migration.folder2donedukia')
+                log.info('default_page does not exist: %s %s' % (context.absolute_url(), default_page_id))
+                try:
+                    new_id = parent.invokeFactory(id=parent.generateUniqueId(),
+                                              type_name='DonEdukia',
+                                              title=context.Title(),
+                                              description=context.Description(),
+                                              )
+                except Exception,e:
+                    from logging import getLogger
+                    log = getLogger('cs.migration.folder2donedukia')
+                    log.info(e)
+                    log.info(context.absolute_url())
+                    return 'XXXXX %s' % context.absolute_url()
         else:
-            new_id = parent.invokeFactory(id=parent.generateUniqueId(),
+            try:
+                new_id = parent.invokeFactory(id=parent.generateUniqueId(),
                                           type_name='DonEdukia',
                                           title=context.Title(),
                                           description=context.Description(),
                                           ) 
+            except Exception,e:
+                    from logging import getLogger
+                    log = getLogger('cs.migration.folder2donedukia')
+                    log.info(e)
+                    log.info(context.absolute_url())
+                    return 'XXXXX %s' % context.absolute_url()
+
         new_obj = getattr(parent, new_id)
-        new_obj._renameAfterCreation()
+        #new_obj._renameAfterCreation()
            
         try:
             # Try with translations
@@ -39,11 +71,13 @@ class Folder2DonEdukia(BrowserView):
         new_obj.manage_pasteObjects(cp_data)
         parent.manage_delObjects(context.getId())
         new_obj._renameAfterCreation()
-        return self.request.response.redirect(new_obj.absolute_url())
-
+        if not code:
+            return self.request.response.redirect(new_obj.absolute_url())
+        else:
+            return new_obj.absolute_url()
 
 class Doc2DonEdukia(BrowserView):
-    def __call__(self):
+    def __call__(self, code=0):
         context = aq_inner(self.context)
         parent = aq_parent(context)
         new_id = parent.invokeFactory(id=parent.generateUniqueId(),
@@ -66,5 +100,8 @@ class Doc2DonEdukia(BrowserView):
             pass
         
         new_obj._renameAfterCreation()
-        return self.request.response.redirect(new_obj.absolute_url())
+        if not code:
+            return self.request.response.redirect(new_obj.absolute_url())
+        else:
+            return new_obj.absolute_url()
 
