@@ -6,10 +6,12 @@ class Folder2DonEdukia(BrowserView):
         context = aq_inner(self.context)
         parent = aq_parent(context)
         default_page_id = context.getProperty('default_page', None)
+        uid = context.UID()
         if default_page_id is not None:
             elem = getattr(context, default_page_id, None)
             if elem is not None:
                 try:
+                    uid = elem.UID()
                     new_id = parent.invokeFactory(id=parent.generateUniqueId(),
                                               type_name='DonEdukia',
                                               title=elem.Title(),
@@ -55,7 +57,7 @@ class Folder2DonEdukia(BrowserView):
 
         new_obj = getattr(parent, new_id)
         #new_obj._renameAfterCreation()
-           
+
         try:
             # Try with translations
             for lang, props in context.getTranslations().items():
@@ -70,6 +72,10 @@ class Folder2DonEdukia(BrowserView):
         cp_data = context.manage_copyObjects([i.getId for i in context.getFolderContents()])
         new_obj.manage_pasteObjects(cp_data)
         parent.manage_delObjects(context.getId())
+      
+        if uid is not None:
+            new_obj._at_uid = uid
+
         new_obj._renameAfterCreation()
         if not code:
             return self.request.response.redirect(new_obj.absolute_url())
